@@ -58,18 +58,21 @@ def get_terminal_size():
 columns, rows = get_terminal_size()
 
 def get_random_flake():
-    try:
-        # python3 support
+    if os.name ==  "posix":
         try:
-            cmd = unichr
-        except NameError:
-            cmd = chr
+            # python3 support
+            try:
+                cmd = unichr
+            except NameError:
+                cmd = chr
 
-        flake = cmd(random.choice(range(0x2740, 0x2749)))
+            flake = cmd(random.choice(range(0x2740, 0x2749)))
 
-        return flake
-    except:
-        return " *"
+            return flake
+        except:
+            pass
+
+    return " *"
 
 def move_flake(col):
     if snowflakes[col][0]+1 == rows:
