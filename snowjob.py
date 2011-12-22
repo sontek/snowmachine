@@ -16,7 +16,9 @@ def get_terminal_size():
         except:
             return None
         return cr
+
     cr = ioctl_GWINSZ(0) or ioctl_GWINSZ(1) or ioctl_GWINSZ(2)
+
     if not cr:
         try:
             fd = os.open(os.ctermid(), os.O_RDONLY)
@@ -34,7 +36,14 @@ def get_terminal_size():
 columns, rows = get_terminal_size()
 
 def get_random_flake():
-    flake=unichr(random.choice(range(0x2740, 0x2749)))
+    # python3 support
+    try:
+        cmd = unichr
+    except NameError:
+        cmd = chr
+
+    flake = cmd(random.choice(range(0x2740, 0x2749)))
+
     return flake
 
 
@@ -42,12 +51,13 @@ def move_flake(col):
     if snowflakes[col][0]+1 == rows:
         snowflakes[col] = [1, get_random_flake()]
     else:
-        print "\033[%s;%sH " % (snowflakes[col][0], col)
+        print("\033[%s;%sH " % (snowflakes[col][0], col))
 
         snowflakes[col][0] += 1
-        print u"\033[%s;%sH%s" % (snowflakes[col][0], col,
-                snowflakes[col][1])
-        print "\033[1;1H"
+
+        print("\033[%s;%sH%s" % (snowflakes[col][0], col, snowflakes[col][1]))
+
+        print("\033[1;1H")
 
 if __name__ == "__main__":
     os.system('clear')
@@ -63,8 +73,8 @@ if __name__ == "__main__":
             flake = get_random_flake()
             snowflakes[col] = [1, flake]
 
-            print "\033[%s;%sH%s" % (snowflakes[col][0], col,
-                    snowflakes[col][1])
+            print("\033[%s;%sH%s" % (snowflakes[col][0], col,
+                    snowflakes[col][1]))
 
         # key any flakes on the screen moving
         for flake in snowflakes.keys():
