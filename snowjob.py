@@ -5,15 +5,20 @@ import time
 
 snowflakes = {}
 rows, columns = map(int, os.popen('stty size', 'r').read().split())
+
+def get_random_flake():
+    flake=unichr(random.choice(range(0x2740, 0x2749)))
+    return flake
+
 def move_flake(col):
-    if snowflakes[col]+1 == rows:
-        snowflakes[col] = 1
+    if snowflakes[col][0]+1 == rows:
+        snowflakes[col] = [1, get_random_flake()]
     else:
-        print "\033[%s;%sH " % (snowflakes[col], col)
+        print "\033[%s;%sH " % (snowflakes[col][0], col)
 
-        snowflakes[col] += 1
-
-        print "\033[%s;%sH*" % (snowflakes[col], col)
+        snowflakes[col][0] += 1
+        print u"\033[%s;%sH%s" % (snowflakes[col][0], col,
+                snowflakes[col][1])
         print "\033[1;1H"
 
 if __name__ == "__main__":
@@ -27,10 +32,13 @@ if __name__ == "__main__":
             move_flake(col)
         else:
         # otherwise put it on the screen
-            snowflakes[col] = 1
-            print "\033[%s;%sH*" % (snowflakes[col], col)
+            flake = get_random_flake()
+            snowflakes[col] = [1, flake]
 
-        # keep any flakes on the screen moving
+            print "\033[%s;%sH%s" % (snowflakes[col][0], col,
+                    snowflakes[col][1])
+
+        # key any flakes on the screen moving
         for flake in snowflakes.keys():
             move_flake(flake)
 
