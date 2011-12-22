@@ -13,21 +13,6 @@ try:
 except ImportError:
     pass
 
-def clear_screen(numlines=100):
-    """Clear the console.
-
-    numlines is an optional argument used only as a fall-back.
-    """
-    if os.name == "posix":
-        # Unix/Linux/MacOS/BSD/etc
-        os.system('clear')
-    elif os.name in ("nt", "dos", "ce"):
-        # DOS/Windows
-        os.system('cls')
-    else:
-        # Fallback for other operating systems.
-        print('\n' * numlines)
-
 def get_terminal_size():
     def ioctl_GWINSZ(fd):
         try:
@@ -57,6 +42,21 @@ def get_terminal_size():
     return int(cr[1]), int(cr[0])
 
 columns, rows = get_terminal_size()
+
+def clear_screen(numlines=100):
+    """Clear the console.
+
+    numlines is an optional argument used only as a fall-back.
+    """
+    if os.name == "posix":
+        # Unix/Linux/MacOS/BSD/etc
+        os.system('clear')
+    elif os.name in ("nt", "dos", "ce"):
+        # DOS/Windows
+        os.system('cls')
+    else:
+        # Fallback for other operating systems.
+        print('\n' * rows)
 
 def get_random_flake():
     if not platform.system() == 'Windows':
