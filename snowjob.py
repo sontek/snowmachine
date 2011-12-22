@@ -5,6 +5,21 @@ import time
 
 snowflakes = {}
 
+def clear_screen(numlines=100):
+    """Clear the console.
+
+    numlines is an optional argument used only as a fall-back.
+    """
+    if os.name == "posix":
+        # Unix/Linux/MacOS/BSD/etc
+        os.system('clear')
+    elif os.name in ("nt", "dos", "ce"):
+        # DOS/Windows
+        os.system('cls')
+    else:
+        # Fallback for other operating systems.
+        print('\n' * numlines)
+
 def get_terminal_size():
     def ioctl_GWINSZ(fd):
         try:
@@ -36,16 +51,18 @@ def get_terminal_size():
 columns, rows = get_terminal_size()
 
 def get_random_flake():
-    # python3 support
     try:
-        cmd = unichr
-    except NameError:
-        cmd = chr
+        # python3 support
+        try:
+            cmd = unichr
+        except NameError:
+            cmd = chr
 
-    flake = cmd(random.choice(range(0x2740, 0x2749)))
+        flake = cmd(random.choice(range(0x2740, 0x2749)))
 
-    return flake
-
+        return flake
+    except:
+        return "*"
 
 def move_flake(col):
     if snowflakes[col][0]+1 == rows:
@@ -60,7 +77,8 @@ def move_flake(col):
         print("\033[1;1H")
 
 if __name__ == "__main__":
-    os.system('clear')
+
+    clear_screen()
 
     while True:
         col = random.choice(range(1, int(columns)))
