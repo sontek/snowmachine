@@ -5,6 +5,13 @@ import time
 
 snowflakes = {}
 
+try:
+    # Windows Support
+    from colorama import init
+    init()
+except ImportError:
+    pass
+
 def clear_screen(numlines=100):
     """Clear the console.
 
