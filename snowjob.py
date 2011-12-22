@@ -2,6 +2,7 @@
 import os
 import random
 import time
+import platform
 
 snowflakes = {}
 
@@ -58,7 +59,7 @@ def get_terminal_size():
 columns, rows = get_terminal_size()
 
 def get_random_flake():
-    if os.name ==  "posix":
+    if not platform.system() == 'Windows':
         try:
             # python3 support
             try:
