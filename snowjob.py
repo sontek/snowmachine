@@ -30,7 +30,7 @@ if __name__ == "__main__":
             snowflakes[col] = 1
             print "\033[%s;%sH*" % (snowflakes[col], col)
 
-        # key any flakes on the screen moving
+        # keep any flakes on the screen moving
         for flake in snowflakes.keys():
             move_flake(flake)
 
