@@ -69,13 +69,13 @@ def get_random_flake():
 
         return flake
     except:
-        return "*"
+        return " *"
 
 def move_flake(col):
     if snowflakes[col][0]+1 == rows:
         snowflakes[col] = [1, get_random_flake()]
     else:
-        print("\033[%s;%sH " % (snowflakes[col][0], col))
+        print("\033[%s;%sH  " % (snowflakes[col][0], col))
 
         snowflakes[col][0] += 1
 
