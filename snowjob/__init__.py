@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import sys
 import random
 import time
 import platform
@@ -80,9 +81,28 @@ def get_random_flake():
     return " *"
 
 
-def move_flake(col):
-    if snowflakes[col][0]+1 == rows:
+current_rows = {}
+
+
+def move_flake(col, stack):
+    if stack:
+        if col not in current_rows:
+            current_rows[col] = rows
+
+        current_row = current_rows[col]
+
+        if current_row == 1:
+            current_row = rows
+            current_rows[col] = current_row
+    else:
+        current_row = rows
+
+    # If next row is the end, lets start a new snow flake
+    if snowflakes[col][0]+1 == current_row:
         snowflakes[col] = [1, get_random_flake()]
+
+        if stack:
+            current_rows[col] -= 1
     else:
         print("\033[%s;%sH  " % (snowflakes[col][0], col))
 
@@ -94,14 +114,23 @@ def move_flake(col):
 
 
 def main():
+    if len(sys.argv) > 1:
+        stack = sys.argv[1] == '--stack'
+    else:
+        stack = False
+
     clear_screen()
 
     while True:
         col = random.choice(range(1, int(columns)))
+        # Don't print snowflakes right next to each other, since
+        # unicode flakes take 2 spaces
+        if col % 2 == 0:
+            continue
 
         # its already on the screen, move it
         if col in snowflakes.keys():
-            move_flake(col)
+            move_flake(col, stack)
         else:
         # otherwise put it on the screen
             flake = get_random_flake()
@@ -112,7 +141,7 @@ def main():
 
         # key any flakes on the screen moving
         for flake in snowflakes.keys():
-            move_flake(flake)
+            move_flake(flake, stack)
 
         time.sleep(0.1)
 
