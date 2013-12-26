@@ -18,7 +18,7 @@ if platform.system() == 'Windows':
 
 setup(
     name="snowjob",
-    version="0.0.2",
+    version="0.0.3",
     author="John Anderson",
     author_email="sontek@gmail.com",
     description=("A python script that will make your terminal "
@@ -26,7 +26,7 @@ setup(
     license = "BSD",
     install_requires=requires,
     keywords="",
-    url = "http://packages.python.org/snowjob",
+    url = "http://github.com/sontek/snowjob",
     packages=['snowjob'],
     long_description=read('README.md'),
     classifiers=[
