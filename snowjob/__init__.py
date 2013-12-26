@@ -13,14 +13,16 @@ try:
 except ImportError:
     pass
 
+
 def get_terminal_size():
     def ioctl_GWINSZ(fd):
         try:
             import fcntl
             import termios
             import struct
-            cr = struct.unpack('hh', fcntl.ioctl(fd, termios.TIOCGWINSZ,
-        '1234'))
+            cr = struct.unpack('hh', fcntl.ioctl(
+                fd, termios.TIOCGWINSZ,
+                '1234'))
         except:
             return None
         return cr
@@ -43,6 +45,7 @@ def get_terminal_size():
 
 columns, rows = get_terminal_size()
 
+
 def clear_screen(numlines=100):
     """Clear the console.
 
@@ -57,6 +60,7 @@ def clear_screen(numlines=100):
     else:
         # Fallback for other operating systems.
         print('\n' * rows)
+
 
 def get_random_flake():
     if not platform.system() == 'Windows':
@@ -75,6 +79,7 @@ def get_random_flake():
 
     return " *"
 
+
 def move_flake(col):
     if snowflakes[col][0]+1 == rows:
         snowflakes[col] = [1, get_random_flake()]
@@ -87,8 +92,8 @@ def move_flake(col):
 
         print("\033[1;1H")
 
-if __name__ == "__main__":
 
+def main():
     clear_screen()
 
     while True:
@@ -103,10 +108,14 @@ if __name__ == "__main__":
             snowflakes[col] = [1, flake]
 
             print("\033[%s;%sH%s" % (snowflakes[col][0], col,
-                    snowflakes[col][1]))
+                                     snowflakes[col][1]))
 
         # key any flakes on the screen moving
         for flake in snowflakes.keys():
             move_flake(flake)
 
         time.sleep(0.1)
+
+
+if __name__ == "__main__":
+    main()
