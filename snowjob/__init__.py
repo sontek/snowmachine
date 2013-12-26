@@ -112,6 +112,7 @@ def move_flake(col, stack):
 
         print("\033[1;1H")
 
+
 def main():
     if len(sys.argv) > 1:
         stack = sys.argv[1] == '--stack'
