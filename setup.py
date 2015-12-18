@@ -24,6 +24,7 @@ setup(
     description=("A python script that will make your terminal "
                  "snow"),
     license = "BSD",
+    setup_requires=['setuptools-git'],
     install_requires=requires,
     keywords="",
     url = "http://github.com/sontek/snowmachine",
