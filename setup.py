@@ -17,8 +17,8 @@ if platform.system() == 'Windows':
     requires.append('colorama')
 
 setup(
-    name="snowjob",
-    version="0.0.4",
+    name="snowmachine",
+    version="0.0.5",
     author="John Anderson",
     author_email="sontek@gmail.com",
     description=("A python script that will make your terminal "
@@ -26,7 +26,7 @@ setup(
     license = "BSD",
     install_requires=requires,
     keywords="",
-    url = "http://github.com/sontek/snowjob",
+    url = "http://github.com/sontek/snowmachine",
     packages=['snowjob'],
     long_description=read('README.md'),
     classifiers=[
