@@ -143,8 +143,10 @@ def main():
         for flake in snowflakes.keys():
             move_flake(flake, stack)
 
-        time.sleep(0.1)
-
+        try:
+            time.sleep(0.1)
+        except KeyboardInterrupt:
+            sys.exit(0)
 
 if __name__ == "__main__":
     main()
