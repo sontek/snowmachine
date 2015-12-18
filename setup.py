@@ -18,7 +18,7 @@ if platform.system() == 'Windows':
 
 setup(
     name="snowmachine",
-    version="0.0.7",
+    version="0.0.8",
     author="John Anderson",
     author_email="sontek@gmail.com",
     description=("A python script that will make your terminal "
