@@ -18,7 +18,7 @@ if platform.system() == 'Windows':
 
 setup(
     name="snowmachine",
-    version="0.0.5",
+    version="0.0.6",
     author="John Anderson",
     author_email="sontek@gmail.com",
     description=("A python script that will make your terminal "
@@ -27,7 +27,7 @@ setup(
     install_requires=requires,
     keywords="",
     url = "http://github.com/sontek/snowmachine",
-    packages=['snowjob'],
+    packages=['snowmachine'],
     long_description=read('README.md'),
     classifiers=[
         "Development Status :: 3 - Alpha",
@@ -38,7 +38,7 @@ setup(
     ],
     entry_points = {
         'console_scripts': [
-            'snowjob = snowjob:main',
+            'snowmachine = snowmachine:main',
         ],
     }
 )
