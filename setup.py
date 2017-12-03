@@ -11,7 +11,7 @@ from setuptools import setup
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
-requires = []
+requires = ['click']
 
 if platform.system() == 'Windows':
     requires.append('colorama')
