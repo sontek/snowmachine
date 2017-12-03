@@ -4,6 +4,15 @@ import sys
 import random
 import time
 import platform
+import click
+
+@click.command()
+@click.option('--speed', default=1, help='Increase to make it snow faster.')
+@click.option('--stack', default=False, help='Make the snow stack.')
+@click.option('--particle', default=None,
+    help='Change the partice used. Could be used to make it rain.')
+def command(speed, stack, particle):
+    main(speed, stack, particle)
 
 snowflakes = {}
 
@@ -84,7 +93,7 @@ def get_random_flake():
 current_rows = {}
 
 
-def move_flake(col, stack):
+def move_flake(col, stack, particle):
     if stack:
         if col not in current_rows:
             current_rows[col] = rows
@@ -98,8 +107,11 @@ def move_flake(col, stack):
         current_row = rows
 
     # If next row is the end, lets start a new snow flake
-    if snowflakes[col][0]+1 == current_row:
-        snowflakes[col] = [1, get_random_flake()]
+    if snowflakes[col][0] + 1 == current_row:
+        char = particle
+        if not particle:
+            char = get_random_flake()
+        snowflakes[col] = [1, char]
 
         if stack:
             current_rows[col] -= 1
@@ -113,12 +125,7 @@ def move_flake(col, stack):
         print("\033[1;1H")
 
 
-def main():
-    if len(sys.argv) > 1:
-        stack = sys.argv[1] == '--stack'
-    else:
-        stack = False
-
+def main(speed=1, stack=False, particle=None):
     clear_screen()
 
     while True:
@@ -130,10 +137,10 @@ def main():
 
         # its already on the screen, move it
         if col in snowflakes.keys():
-            move_flake(col, stack)
+            move_flake(col, stack, particle)
         else:
         # otherwise put it on the screen
-            flake = get_random_flake()
+            flake = particle if particle else get_random_flake()
             snowflakes[col] = [1, flake]
 
             print("\033[%s;%sH%s" % (snowflakes[col][0], col,
@@ -141,12 +148,22 @@ def main():
 
         # key any flakes on the screen moving
         for flake in snowflakes.keys():
-            move_flake(flake, stack)
+            move_flake(flake, stack, particle)
 
+        if speed > 0:
+            zeroes = '0' * speed
+            final_speed = float('.' + zeroes + '1')
+        else:
+            final_speed = abs(speed) * .1
+
+        final_speed=0.07
+
+        print("FinAL SPEED %s" % final_speed)
         try:
-            time.sleep(0.1)
+            time.sleep(final_speed)
         except KeyboardInterrupt:
+            clear_screen()
             sys.exit(0)
 
 if __name__ == "__main__":
-    main()
+    command()
