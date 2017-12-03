@@ -152,13 +152,10 @@ def main(speed=1, stack=False, particle=None):
 
         if speed > 0:
             zeroes = '0' * speed
-            final_speed = float('.' + zeroes + '1')
+            final_speed = float('.' + zeroes + '7')
         else:
             final_speed = abs(speed) * .1
 
-        final_speed=0.07
-
-        print("FinAL SPEED %s" % final_speed)
         try:
             time.sleep(final_speed)
         except KeyboardInterrupt:
