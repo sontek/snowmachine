@@ -7,7 +7,7 @@ import platform
 import click
 
 @click.command()
-@click.option('--speed', default=1, help='Increase to make it snow faster.')
+@click.option('--speed', default=14, help='Increase to make it snow faster.')
 @click.option('--stack', default=False, help='Make the snow stack.')
 @click.option('--particle', default=None,
     help='Change the partice used. Could be used to make it rain.')
@@ -125,7 +125,7 @@ def move_flake(col, stack, particle):
         print("\033[1;1H")
 
 
-def main(speed=1, stack=False, particle=None):
+def main(speed=14, stack=False, particle=None):
     clear_screen()
 
     while True:
@@ -150,11 +150,7 @@ def main(speed=1, stack=False, particle=None):
         for flake in snowflakes.keys():
             move_flake(flake, stack, particle)
 
-        if speed > 0:
-            zeroes = '0' * speed
-            final_speed = float('.' + zeroes + '7')
-        else:
-            final_speed = abs(speed) * .1
+        final_speed = 1.0 / speed
 
         try:
             time.sleep(final_speed)
