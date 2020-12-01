@@ -11,14 +11,11 @@ from setuptools import setup
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
-requires = ['click']
-
-if platform.system() == 'Windows':
-    requires.append('colorama')
+requires = ['click', 'colorama']
 
 setup(
     name="snowmachine",
-    version="0.0.11",
+    version="1.0.0",
     author="John Anderson",
     author_email="sontek@gmail.com",
     description=("A python script that will make your terminal "
