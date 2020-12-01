@@ -23,12 +23,13 @@ color_options = [
     "rainbow",
 ]
 
-bad_colors = ['RESET']
+bad_colors = ["RESET"]
 codes = vars(Fore)
 colors = []
 for code in codes:
     if not code.endswith("_EX") and code not in bad_colors:
         colors.append(code.lower())
+
 
 @click.command()
 @click.option("--speed", default=14, help="Increase to make it snow faster.")
@@ -47,7 +48,7 @@ for code in codes:
     "--color",
     default=None,
     help="Change the color of the particle.",
-    type=click.Choice(colors + ['rainbow']),
+    type=click.Choice(colors + ["rainbow"]),
 )
 def command(speed, stack, particle, color):
     main(speed, stack, particle, color)
@@ -109,12 +110,13 @@ def get_random_flake():
 
 current_rows = {}
 
+
 def print_col(col, color):
-    output ="\033[%s;%sH%s" % (snowflakes[col][0], col, snowflakes[col][1])
+    output = "\033[%s;%sH%s" % (snowflakes[col][0], col, snowflakes[col][1])
     # We don't want to use black and white in our rainbow
-    bad_colors = ['black', 'white']
+    bad_colors = ["black", "white"]
     if color:
-        if color == 'rainbow':
+        if color == "rainbow":
             color_options = [color for color in colors if color not in bad_colors]
             output = getattr(Fore, random.choice(color_options).upper()) + output
         else:
@@ -124,6 +126,7 @@ def print_col(col, color):
 
     # reset the cursor
     print("\033[1;1H")
+
 
 def move_flake(col, stack, particle, color):
     # Rows is the max amount of rows on the screen,
@@ -203,9 +206,11 @@ def main(speed=14, stack=None, particle=None, color=None):
     #   print(f"{flake}: {chr(flake)}")
     random_printer(speed, particle, stack, color)
 
+
 def signal_handler(sig, frame):
     clear_screen()
     sys.exit(0)
+
 
 signal.signal(signal.SIGINT, signal_handler)
 
