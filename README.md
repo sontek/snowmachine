@@ -1,7 +1,10 @@
 snowjob
 =======
 
-A python script that allows your terminal to snow.
+A python script that allows your terminal to snow. View it in action here:
+
+https://asciinema.org/a/sKiuQNWDsgwOGXmsz3NSOqbXf
+https://asciinema.org/a/kjNOzeWQKWN4KMj298VQDyBjY
 
 Getting Started
 ---------------
@@ -38,4 +41,5 @@ https://gist.github.com/sontek/1505483
 
 Screenshot:
 
-![Screenshot](screenshot.png?raw=true)
+![Screenshot 1](https://i.imgur.com/r8MRa17.png)
+![Screenshot 2](https://i.imgur.com/d8rH4de.png)
