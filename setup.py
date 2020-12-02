@@ -15,7 +15,7 @@ requires = ['click', 'colorama']
 
 setup(
     name="snowmachine",
-    version="1.0.0",
+    version="1.0.1",
     author="John Anderson",
     author_email="sontek@gmail.com",
     description=("A python script that will make your terminal "
@@ -27,6 +27,7 @@ setup(
     url = "http://github.com/sontek/snowmachine",
     packages=['snowmachine'],
     long_description=read('README.md'),
+    long_description_content_type='text/markdown',
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Topic :: Utilities",
