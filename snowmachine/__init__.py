@@ -37,7 +37,7 @@ for code in codes:
     "--stack",
     default=None,
     help="Make the snow stack. Options",
-    type=click.Choice(["pile", "snowman"]),
+    type=click.Choice(["pile"]),
 )
 @click.option(
     "--particle",
