@@ -1,4 +1,4 @@
-snowjob
+snowmachine
 =======
 
 A python script that allows your terminal to snow. View it in action here:
