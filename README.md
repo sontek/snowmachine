@@ -34,6 +34,11 @@ You can also change the particle colors if you would like:
 $ snowmachine --color=rainbow
 ```
 
+In addition you can change the speed of particles:
+```bash
+$ snowmachine --speed=5
+```
+
 
 You can find a bash(shell) script version of this here:
 https://gist.github.com/sontek/1505483
