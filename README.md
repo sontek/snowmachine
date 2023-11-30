@@ -15,6 +15,7 @@ You can make it snow:
 $ pip install snowmachine
 $ snowmachine snow
 ```
+<img src="https://cdn.zappy.app/b3cb0d489960b5c545ee95aad08c6da1.png" />
 
 or render a tree:
 
