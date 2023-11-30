@@ -20,7 +20,7 @@ color_options = [
     "blue",
     "cyan",
     "white",
-    "rainbow",
+#    "rainbow",
 ]
 
 bad_colors = ["RESET"]
@@ -34,6 +34,12 @@ def get_terminal_size():
     return shutil.get_terminal_size((80, 20))
 
 columns, rows = get_terminal_size()
+
+def get_random_color():
+    # We don't want to use black and white in our rainbow
+    bad_colors = ["black", "white"]
+    color_options = [color for color in colors if color not in bad_colors]
+    return random.choice(color_options)
 
 
 @click.group()
@@ -51,7 +57,7 @@ def cli():
 @click.option(
     "--particle",
     default=None,
-    help="Change the particle used. Could be used to make it rain.",
+    help="Change the particle used.",
 )
 @click.option(
     "--color",
@@ -97,11 +103,17 @@ def snow(speed, stack, particle, color):
             sys.exit(0)
 
 @cli.command()
-@click.option("--speed", default=1, help="Speed that the lights will blink")
+@click.option("--light-delay", default=1, help="Seconds between light changes")
 @click.option(
     "--color",
     default="green",
-    help="Change the color of the lights.",
+    help="Change the color of the tree",
+    type=click.Choice(colors + ["rainbow"]),
+)
+@click.option(
+    "--snow-color",
+    default=None,
+    help="Change the color of the snow.",
     type=click.Choice(colors + ["rainbow"]),
 )
 @click.option(
@@ -109,7 +121,9 @@ def snow(speed, stack, particle, color):
     default="*",
     help="Change the partice used for the leaves.",
 )
-def tree(speed, color, particle):
+@click.option("--snow", default=True, help="Render snow")
+@click.option("--snow-speed", default=20, help="Speed that the snow will fall")
+def tree(light_delay, color, snow_color, particle, snow, snow_speed):
     clear_screen()
     # (row, col, particle)
     treeparts = []
@@ -124,7 +138,7 @@ def tree(speed, color, particle):
     for i in range(int(tree_rows / 2), tree_rows):
         for k in range(j):
             center = int((columns / 2) - (j / 2)) + k
-            treeparts.append((i, center, particle))
+            treeparts.append((i, center, particle, color))
         # Keep the particles even so they balance properly
         j += 2
 
@@ -134,23 +148,61 @@ def tree(speed, color, particle):
             center = int((columns / 2) - (trunk_width / 2)) + k
             trunkparts.append((i, center, "m"))
 
+    snowflakes = {}
+    current_rows = {}
 
+    start = time.time()
+
+    new_tree = treeparts.copy()
     while True:
-        for part in treeparts:
-            final_particle = part[2]
-            final_color = color
-            # 10% chance we'll be a chrismas light instead of
-            # a tree particle.
-            if random.random() < 0.10 and part[0]:
-                final_particle = "o"
-                final_color = "rainbow"
+        if snow:
+            ##### SNOW ######
+            col = random.choice(range(1, int(columns)))
 
+            # Don't print snowflakes right next to each other, since
+            # unicode flakes take 2 spaces
+            if col % 2 == 0:
+                continue
+
+            # its already on the screen, move it
+            if col in snowflakes.keys():
+                move_flake(snowflakes, current_rows, col, None, particle, snow_color)
+            else:
+                # otherwise put it on the screen
+                flake = particle if particle else get_random_flake()
+                snowflakes[col] = [1, flake]
+                print_snowflake_col(snowflakes, col, snow_color)
+
+            # key any flakes on the screen moving
+            for flake in snowflakes.keys():
+                move_flake(snowflakes, current_rows, flake, None, particle, snow_color)
+            ##### SNOW ######
+
+        end = time.time()
+        duration = end - start
+
+        if duration > light_delay:
+            new_tree = treeparts.copy()
+            for part_index, part in enumerate(new_tree):
+                final_particle = part[2]
+                final_color = color
+                # 10% chance we'll be a chrismas light instead of
+                # a tree particle.
+                if random.random() < 0.10 and part[0]:
+                    final_particle = "o"
+                    final_color = get_random_color()
+
+                    new_tree[part_index] = (part[0], part[1], final_particle, final_color)
+            start = time.time()
+
+        for part in new_tree:
             print_character(
                 part[0],
                 part[1],
-                final_particle,
-                final_color,
+                part[2],
+                part[3],
             )
+
         for part in trunkparts:
             print_character(
                 part[0],
@@ -159,7 +211,7 @@ def tree(speed, color, particle):
                 "yellow",
             )
 
-        final_speed = 1.0 / speed
+        final_speed = 1.0 / snow_speed
         time.sleep(final_speed)
 
 
@@ -210,12 +262,10 @@ def get_random_flake():
 def print_character(row, column, character, color):
     output = "\033[%s;%sH%s" % (row, column, character)
 
-    # We don't want to use black and white in our rainbow
-    bad_colors = ["black", "white"]
     if color:
         if color == "rainbow":
             color_options = [color for color in colors if color not in bad_colors]
-            output = getattr(Fore, random.choice(color_options).upper()) + output
+            output = getattr(Fore, get_random_color().upper()) + output
         else:
             output = getattr(Fore, color.upper()) + output
 
@@ -223,6 +273,9 @@ def print_character(row, column, character, color):
 
     # reset the cursor
     print("\033[1;1H")
+
+    # reset the color
+    print("\033[0m")
 
 
 def print_snowflake_col(snowflakes, col, color):
