@@ -9,15 +9,25 @@ A python script that allows your terminal to snow. View it in action here:
 Getting Started
 ---------------
 
+You can make it snow:
+
 ```bash
 $ pip install snowmachine
-$ snowmachine
+$ snowmachine snow
 ```
+
+or render a tree:
+
+```bash
+$ pip install snowmachine
+$ snowmachine tree
+```
+<img src="https://cdn.zappy.app/3c3a71af31d5a2a6cf0bb77de8b94d13.png" />
 
 You can also tell it to stack the snow if you prefer.
 
 ```bash
-$ snowmachine --stack=pile
+$ snowmachine snow --stack=pile
 ```
 
 If you don't like the unicode particles you can tell it to use
@@ -25,13 +35,13 @@ asterisk or some other character.  If you use cmd.exe for example,
 this will be required.
 
 ```bash
-$ snowmachine --stack=pile --particle="*"
+$ snowmachine snow --stack=pile --particle="*"
 ```
 
 You can also change the particle colors if you would like:
 
 ```bash
-$ snowmachine --color=rainbow
+$ snowmachine snow --color=rainbow
 ```
 
 
