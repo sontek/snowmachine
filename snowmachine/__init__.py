@@ -30,8 +30,17 @@ for code in codes:
     if not code.endswith("_EX") and code not in bad_colors:
         colors.append(code.lower())
 
+def get_terminal_size():
+    return shutil.get_terminal_size((80, 20))
 
-@click.command()
+columns, rows = get_terminal_size()
+
+
+@click.group()
+def cli():
+    pass
+
+@cli.command()
 @click.option("--speed", default=14, help="Increase to make it snow faster.")
 @click.option(
     "--stack",
@@ -42,7 +51,7 @@ for code in codes:
 @click.option(
     "--particle",
     default=None,
-    help="Change the partice used. Could be used to make it rain.",
+    help="Change the particle used. Could be used to make it rain.",
 )
 @click.option(
     "--color",
@@ -50,18 +59,108 @@ for code in codes:
     help="Change the color of the particle.",
     type=click.Choice(colors + ["rainbow"]),
 )
-def command(speed, stack, particle, color):
-    main(speed, stack, particle, color)
+def snow(speed, stack, particle, color):
+    clear_screen()
+    # This ends up formatted as column being the key and then [0] is row and
+    # [1] is the particle. For example:
+    # {"1": [0, "*"]}
+    snowflakes = {}
+    current_rows = {}
+
+    while True:
+        col = random.choice(range(1, int(columns)))
+
+        # Don't print snowflakes right next to each other, since
+        # unicode flakes take 2 spaces
+        if col % 2 == 0:
+            continue
+
+        # its already on the screen, move it
+        if col in snowflakes.keys():
+            move_flake(snowflakes, current_rows, col, stack, particle, color)
+        else:
+            # otherwise put it on the screen
+            flake = particle if particle else get_random_flake()
+            snowflakes[col] = [1, flake]
+            print_snowflake_col(snowflakes, col, color)
+
+        # key any flakes on the screen moving
+        for flake in snowflakes.keys():
+            move_flake(snowflakes, current_rows, flake, stack, particle, color)
+
+        final_speed = 1.0 / speed
+
+        try:
+            time.sleep(final_speed)
+        except KeyboardInterrupt:
+            clear_screen()
+            sys.exit(0)
+
+@cli.command()
+@click.option("--speed", default=1, help="Speed that the lights will blink")
+@click.option(
+    "--color",
+    default="green",
+    help="Change the color of the lights.",
+    type=click.Choice(colors + ["rainbow"]),
+)
+@click.option(
+    "--particle",
+    default="*",
+    help="Change the partice used for the leaves.",
+)
+def tree(speed, color, particle):
+    clear_screen()
+    # (row, col, particle)
+    treeparts = []
+    trunkparts = []
+
+    particle = particle or get_random_flake()
+
+    trunk_size = 3
+    tree_rows = rows - trunk_size
+    # Draw the tree
+    j = 1
+    for i in range(int(tree_rows / 2), tree_rows):
+        for k in range(j):
+            center = int((columns / 2) - (j / 2)) + k
+            treeparts.append((i, center, particle))
+        # Keep the particles even so they balance properly
+        j += 2
+
+    trunk_width = 9
+    for i in range(tree_rows, tree_rows + trunk_size):
+        for k in range(trunk_width):
+            center = int((columns / 2) - (trunk_width / 2)) + k
+            trunkparts.append((i, center, "m"))
 
 
-snowflakes = {}
+    while True:
+        for part in treeparts:
+            final_particle = part[2]
+            final_color = color
+            # 10% chance we'll be a chrismas light instead of
+            # a tree particle.
+            if random.random() < 0.10 and part[0]:
+                final_particle = "o"
+                final_color = "rainbow"
 
+            print_character(
+                part[0],
+                part[1],
+                final_particle,
+                final_color,
+            )
+        for part in trunkparts:
+            print_character(
+                part[0],
+                part[1],
+                part[2],
+                "yellow",
+            )
 
-def get_terminal_size():
-    return shutil.get_terminal_size((80, 20))
-
-
-columns, rows = get_terminal_size()
+        final_speed = 1.0 / speed
+        time.sleep(final_speed)
 
 
 def clear_screen(numlines=100):
@@ -108,11 +207,9 @@ def get_random_flake():
     return " *"
 
 
-current_rows = {}
+def print_character(row, column, character, color):
+    output = "\033[%s;%sH%s" % (row, column, character)
 
-
-def print_col(col, color):
-    output = "\033[%s;%sH%s" % (snowflakes[col][0], col, snowflakes[col][1])
     # We don't want to use black and white in our rainbow
     bad_colors = ["black", "white"]
     if color:
@@ -120,7 +217,7 @@ def print_col(col, color):
             color_options = [color for color in colors if color not in bad_colors]
             output = getattr(Fore, random.choice(color_options).upper()) + output
         else:
-            output = getattr(Fore, color.upper())
+            output = getattr(Fore, color.upper()) + output
 
     print(output)
 
@@ -128,7 +225,11 @@ def print_col(col, color):
     print("\033[1;1H")
 
 
-def move_flake(col, stack, particle, color):
+def print_snowflake_col(snowflakes, col, color):
+    print_character(snowflakes[col][0], col, snowflakes[col][1], color)
+
+
+def move_flake(snowflakes, current_rows, col, stack, particle, color):
     # Rows is the max amount of rows on the screen,
     # so settings the column to the rows count means
     # putting it at the bottom of the screen
@@ -158,53 +259,13 @@ def move_flake(col, stack, particle, color):
         if not particle:
             char = get_random_flake()
         snowflakes[col] = [1, char]
-        print_col(col, color)
+        print_snowflake_col(snowflakes, col, color)
     else:
         # erase the flake in current location
         print("\033[%s;%sH  " % (snowflakes[col][0], col))
         # move down by one
         snowflakes[col][0] += 1
-        print_col(col, color)
-
-
-def random_printer(speed, particle, stack, color):
-    clear_screen()
-
-    while True:
-        col = random.choice(range(1, int(columns)))
-
-        # Don't print snowflakes right next to each other, since
-        # unicode flakes take 2 spaces
-        if col % 2 == 0:
-            continue
-
-        # its already on the screen, move it
-        if col in snowflakes.keys():
-            move_flake(col, stack, particle, color)
-        else:
-            # otherwise put it on the screen
-            flake = particle if particle else get_random_flake()
-            snowflakes[col] = [1, flake]
-            print_col(col, color)
-
-        # key any flakes on the screen moving
-        for flake in snowflakes.keys():
-            move_flake(flake, stack, particle, color)
-
-        final_speed = 1.0 / speed
-
-        try:
-            time.sleep(final_speed)
-        except KeyboardInterrupt:
-            clear_screen()
-            sys.exit(0)
-
-
-def main(speed=14, stack=None, particle=None, color=None):
-    # Print all the flakes
-    # for flake in range(0x2740, 0x2749):
-    #   print(f"{flake}: {chr(flake)}")
-    random_printer(speed, particle, stack, color)
+        print_snowflake_col(snowflakes, col, color)
 
 
 def signal_handler(sig, frame):
@@ -215,4 +276,4 @@ def signal_handler(sig, frame):
 signal.signal(signal.SIGINT, signal_handler)
 
 if __name__ == "__main__":
-    command()
+    cli()
