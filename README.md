@@ -6,13 +6,23 @@ A python script that allows your terminal to snow. View it in action here:
 * https://asciinema.org/a/sKiuQNWDsgwOGXmsz3NSOqbXf
 * https://asciinema.org/a/kjNOzeWQKWN4KMj298VQDyBjY
 
+*homebrew*:
+
+```bash
+brew tap sontek/snowmachine
+brew install sontek/snowmachine/snowmachine
+```
+
+*pypi*:
+```bash
+pip install snowmachine
+```
+
 Getting Started
 ---------------
-
 You can make it snow:
 
 ```bash
-$ pip install snowmachine
 $ snowmachine snow
 ```
 <img src="https://cdn.zappy.app/b3cb0d489960b5c545ee95aad08c6da1.png" />
@@ -20,7 +30,6 @@ $ snowmachine snow
 or render a tree:
 
 ```bash
-$ pip install snowmachine
 $ snowmachine tree
 ```
 <img src="https://cdn.zappy.app/3c3a71af31d5a2a6cf0bb77de8b94d13.png" />
