@@ -1,0 +1,28 @@
+[project]
+name = "snowmachine"
+version = "2.0.0"
+authors = [
+  { name="John Anderson", email="sontek@gmail.com" },
+]
+description = "A python script that will make your terminal snow."
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+  "click",
+  "colorama",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+]
+
+[project.scripts]
+snowmachine = "snowmachine:cli"
+
+[project.urls]
+Homepage = "https://github.com/sontek/snowmachine"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
