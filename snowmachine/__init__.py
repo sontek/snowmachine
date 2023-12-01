@@ -116,6 +116,12 @@ def snow(speed, stack, particle, color):
     type=click.Choice(colors + ["rainbow"]),
 )
 @click.option(
+    "--lights-color",
+    default=None,
+    help="Change the color of the lights",
+    type=click.Choice(colors + ["rainbow"]),
+)
+@click.option(
     "--snow-color",
     default=None,
     help="Change the color of the snow.",
@@ -127,8 +133,9 @@ def snow(speed, stack, particle, color):
     help="Change the partice used for the leaves.",
 )
 @click.option("--snow", default=True, help="Render snow")
+@click.option("--snow-particle", default=None, help="The particle for snow")
 @click.option("--snow-speed", default=20, help="Speed that the snow will fall")
-def tree(light_delay, color, snow_color, particle, snow, snow_speed):
+def tree(light_delay, color, lights_color, snow_color, particle, snow, snow_particle, snow_speed):
     clear_screen()
     # (row, col, particle)
     treeparts = []
@@ -174,7 +181,7 @@ def tree(light_delay, color, snow_color, particle, snow, snow_speed):
                 move_flake(snowflakes, current_rows, col, None, particle, snow_color)
             else:
                 # otherwise put it on the screen
-                flake = particle if particle else get_random_flake()
+                flake = snow_particle if snow_particle else get_random_flake()
                 snowflakes[col] = [1, flake]
                 print_snowflake_col(snowflakes, col, snow_color)
 
@@ -195,7 +202,7 @@ def tree(light_delay, color, snow_color, particle, snow, snow_speed):
                 # a tree particle.
                 if random.random() < 0.10 and part[0]:
                     final_particle = "o"
-                    final_color = get_random_color()
+                    final_color = lights_color if lights_color else get_random_color()
 
                     new_tree[part_index] = (
                         part[0],
