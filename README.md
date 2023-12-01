@@ -3,8 +3,9 @@ snowmachine
 
 A python script that allows your terminal to snow. View it in action here:
 
-* https://asciinema.org/a/sKiuQNWDsgwOGXmsz3NSOqbXf
-* https://asciinema.org/a/kjNOzeWQKWN4KMj298VQDyBjY
+* https://asciinema.org/a/624427
+* https://asciinema.org/a/376826
+* https://asciinema.org/a/376827
 
 *homebrew*:
 
