@@ -1,0 +1,7 @@
+screenshot.png
+venv
+dist/
+build/
+.eggs/
+.ruff_cache/
+.git/
