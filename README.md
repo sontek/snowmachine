@@ -24,6 +24,11 @@ pip install snowmachine
 nix-shell -p snowmachine --command snowmachine
 ```
 
+*docker*:
+```bash
+docker run --rm -ti sontek/snowmachine
+```
+
 Getting Started
 ---------------
 You can make it snow:
