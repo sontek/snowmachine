@@ -15,7 +15,7 @@ requires = ['click', 'colorama']
 
 setup(
     name="snowmachine",
-    version="1.0.1",
+    version="2.0.0",
     author="John Anderson",
     author_email="sontek@gmail.com",
     description=("A python script that will make your terminal "
