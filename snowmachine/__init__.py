@@ -20,7 +20,7 @@ color_options = [
     "blue",
     "cyan",
     "white",
-#    "rainbow",
+    #    "rainbow",
 ]
 
 bad_colors = ["RESET"]
@@ -30,10 +30,13 @@ for code in codes:
     if not code.endswith("_EX") and code not in bad_colors:
         colors.append(code.lower())
 
+
 def get_terminal_size():
     return shutil.get_terminal_size((80, 20))
 
+
 columns, rows = get_terminal_size()
+
 
 def get_random_color():
     # We don't want to use black and white in our rainbow
@@ -45,6 +48,7 @@ def get_random_color():
 @click.group()
 def cli():
     pass
+
 
 @cli.command()
 @click.option("--speed", default=14, help="Increase to make it snow faster.")
@@ -101,6 +105,7 @@ def snow(speed, stack, particle, color):
         except KeyboardInterrupt:
             clear_screen()
             sys.exit(0)
+
 
 @cli.command()
 @click.option("--light-delay", default=1, help="Seconds between light changes")
@@ -192,7 +197,12 @@ def tree(light_delay, color, snow_color, particle, snow, snow_speed):
                     final_particle = "o"
                     final_color = get_random_color()
 
-                    new_tree[part_index] = (part[0], part[1], final_particle, final_color)
+                    new_tree[part_index] = (
+                        part[0],
+                        part[1],
+                        final_particle,
+                        final_color,
+                    )
             start = time.time()
 
         for part in new_tree:
