@@ -18,6 +18,11 @@ brew install sontek/snowmachine/snowmachine
 pip install snowmachine
 ```
 
+*nix*:
+```bash
+nix-shell -p snowmachine --command snowmachine
+```
+
 Getting Started
 ---------------
 You can make it snow:
