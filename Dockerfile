@@ -1,4 +1,4 @@
-FROM cgr.dev/chainguard/python:latest-dev
+FROM python:alpine
 WORKDIR /app
 COPY . .
 RUN pip install -e .
