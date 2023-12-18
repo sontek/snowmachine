@@ -299,7 +299,7 @@ def snowplow(speed, plowchar, min_snowtimer, max_snowtimer, particle, color):
     4:" <|  ___\    ||     | ____  |   ",
     3:" <| /    |___||_____|/    | |   ",
     2:" ||/  O  |__________/  O  |_|\_[",
-    1:"    \___/            \___/     ["
+    1:"  ~~\___/          ~~\___/     ["
     }
 
     asciiPersonLeft = {
