@@ -178,7 +178,7 @@ def tree(light_delay, color, lights_color, snow_color, particle, snow, snow_part
 
             # its already on the screen, move it
             if col in snowflakes.keys():
-                move_flake(snowflakes, current_rows, col, None, particle, snow_color)
+                move_flake(snowflakes, current_rows, col, None, snow_particle, snow_color)
             else:
                 # otherwise put it on the screen
                 flake = snow_particle if snow_particle else get_random_flake()
@@ -187,7 +187,7 @@ def tree(light_delay, color, lights_color, snow_color, particle, snow, snow_part
 
             # key any flakes on the screen moving
             for flake in snowflakes.keys():
-                move_flake(snowflakes, current_rows, flake, None, particle, snow_color)
+                move_flake(snowflakes, current_rows, flake, None, snow_particle, snow_color)
             ##### SNOW ######
 
         end = time.time()
