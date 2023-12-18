@@ -141,7 +141,7 @@ def tree(light_delay, color, lights_color, snow_color, particle, snow, snow_part
     treeparts = []
     trunkparts = []
 
-    particle = particle or get_random_flake()
+    particle = particle or '*'
 
     trunk_size = 3
     tree_rows = rows - trunk_size
