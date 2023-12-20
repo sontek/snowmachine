@@ -138,7 +138,7 @@ def tree(light_delay, color, lights_color, snow_color, particle, snow, snow_part
     treeparts = []
     trunkparts = []
 
-    particle = particle or get_random_flake()
+    particle = particle or '*'
 
     trunk_size = 3
     tree_rows = rows - trunk_size
@@ -181,7 +181,7 @@ def tree(light_delay, color, lights_color, snow_color, particle, snow, snow_part
 
             # key any flakes on the screen moving
             for flake in snowflakes.keys():
-                move_flake(snowflakes, current_rows, flake, None, particle, snow_color)
+                move_flake(snowflakes, current_rows, flake, None, snow_particle, snow_color)
             ##### SNOW ######
 
         end = time.time()
