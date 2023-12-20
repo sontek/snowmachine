@@ -38,12 +38,18 @@ $ snowmachine snow
 ```
 <img src="https://cdn.zappy.app/b3cb0d489960b5c545ee95aad08c6da1.png" />
 
-or render a tree:
+render a tree:
 
 ```bash
 $ snowmachine tree
 ```
 <img src="https://cdn.zappy.app/3c3a71af31d5a2a6cf0bb77de8b94d13.png" />
+
+or clean up the snow with a plow:
+
+```bash
+$ snowmachine snowplow
+```
 
 You can also tell it to stack the snow if you prefer.
 
@@ -70,6 +76,10 @@ In addition you can change the speed of particles:
 $ snowmachine --speed=5
 ```
 
+You can also specify the type of plow you want to use:
+```bash
+$ snowmachine snowplow --plowchar=person
+```
 
 You can find a bash(shell) script version of this here:
 https://gist.github.com/sontek/1505483
