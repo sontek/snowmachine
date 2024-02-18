@@ -172,7 +172,7 @@ def tree(light_delay, color, lights_color, snow_color, particle, snow, snow_part
     trunk_size = 3
     tree_rows = rows - trunk_size
     # Draw the tree
-    j = 1 # agac baslangic yildizi
+    j = 1
     for i in range(int(tree_rows / 2), tree_rows):
         for k in range(j):
             center = int((columns / 2) - (j / 2)) + k
