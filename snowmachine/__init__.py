@@ -8,6 +8,11 @@ import platform
 import click
 import shutil
 import signal
+import threading
+# To remove the pygame message
+from os import environ
+environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
+import pygame
 
 # initialize colorama
 init()
@@ -44,13 +49,22 @@ def get_random_color():
     color_options = [color for color in colors if color not in bad_colors]
     return random.choice(color_options)
 
+def play_music():
+    pygame.mixer.init()
+    pygame.mixer.music.load("melodys/melody.mp3")
+    pygame.mixer.music.play(loops=-1)
+
 
 @click.group()
-def cli():
-    pass
+@click.option("--music", is_flag=True, help="Play music in the background")
+def cli(music):
+    if music:
+        sound_thread = threading.Thread(target=play_music)
+        sound_thread.start()
 
 
 @cli.command()
+@click.option("--music", is_flag=True, help="Play music in the background")
 @click.option("--speed", default=14, help="Increase to make it snow faster.")
 @click.option(
     "--stack",
@@ -69,13 +83,19 @@ def cli():
     help="Change the color of the particle.",
     type=click.Choice(colors + ["rainbow"]),
 )
-def snow(speed, stack, particle, color):
+
+
+def snow(speed, stack, particle, color, music):
     clear_screen()
     # This ends up formatted as column being the key and then [0] is row and
     # [1] is the particle. For example:
     # {"1": [0, "*"]}
     snowflakes = {}
     current_rows = {}
+
+    if music:
+        sound_thread = threading.Thread(target=play_music)
+        sound_thread.start()
 
     while True:
         col = random.choice(range(1, int(columns)))
@@ -105,6 +125,7 @@ def snow(speed, stack, particle, color):
         except KeyboardInterrupt:
             clear_screen()
             sys.exit(0)
+    
 
 
 @cli.command()
@@ -135,11 +156,16 @@ def snow(speed, stack, particle, color):
 @click.option("--snow", default=True, help="Render snow")
 @click.option("--snow-particle", default=None, help="The particle for snow")
 @click.option("--snow-speed", default=20, help="Speed that the snow will fall")
-def tree(light_delay, color, lights_color, snow_color, particle, snow, snow_particle, snow_speed):
+@click.option("--music", is_flag=True, help="Play music in the background")
+def tree(light_delay, color, lights_color, snow_color, particle, snow, snow_particle, snow_speed, music):
     clear_screen()
     # (row, col, particle)
     treeparts = []
     trunkparts = []
+    
+    if music:
+        sound_thread = threading.Thread(target=play_music)
+        sound_thread.start()
 
     particle = particle or '*'
 
@@ -227,7 +253,7 @@ def tree(light_delay, color, lights_color, snow_color, particle, snow, snow_part
                 part[2],
                 "yellow",
             )
-
+        
         final_speed = 1.0 / snow_speed
         time.sleep(final_speed)
 
@@ -237,7 +263,7 @@ def clear_screen(numlines=100):
 
     numlines is an optional argument used only as a fall-back.
     """
-    print(Style.RESET_ALL)
+    #print(Style.RESET_ALL)
 
     if os.name == "posix":
         # Unix/Linux/MacOS/BSD/etc
