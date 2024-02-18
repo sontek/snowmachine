@@ -263,7 +263,7 @@ def clear_screen(numlines=100):
 
     numlines is an optional argument used only as a fall-back.
     """
-    print(Style.RESET_ALL)
+    #print(Style.RESET_ALL)
 
     if os.name == "posix":
         # Unix/Linux/MacOS/BSD/etc
