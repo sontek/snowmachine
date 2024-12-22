@@ -85,11 +85,8 @@ def snow(speed, stack, particle, color):
         if col % 2 == 0:
             continue
 
-        # its already on the screen, move it
-        if col in snowflakes.keys():
-            move_flake(snowflakes, current_rows, col, stack, particle, color)
-        else:
-            # otherwise put it on the screen
+        # Add new flake to the screen
+        if not col in snowflakes.keys():
             flake = particle if particle else get_random_flake()
             snowflakes[col] = [1, flake]
             print_snowflake_col(snowflakes, col, color)
@@ -176,11 +173,8 @@ def tree(light_delay, color, lights_color, snow_color, particle, snow, snow_part
             if col % 2 == 0:
                 continue
 
-            # its already on the screen, move it
-            if col in snowflakes.keys():
-                move_flake(snowflakes, current_rows, col, None, snow_particle, snow_color)
-            else:
-                # otherwise put it on the screen
+            # Add new flake to the screen
+            if not col in snowflakes.keys():
                 flake = snow_particle if snow_particle else get_random_flake()
                 snowflakes[col] = [1, flake]
                 print_snowflake_col(snowflakes, col, snow_color)
