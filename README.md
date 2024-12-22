@@ -79,3 +79,17 @@ Screenshot:
 
 ![Screenshot 1](https://i.imgur.com/r8MRa17.png)
 ![Screenshot 2](https://i.imgur.com/d8rH4de.png)
+
+## Star Options
+
+The Christmas tree can now be decorated with different star styles on top. Use the `--star` option with the `tree` command to add a star. Available styles are:
+
+- `classic`: A traditional 5-point star pattern made with asterisks
+- `diamond`: A diamond-shaped star pattern
+- `patrick`: A playful star pattern resembling a starfish
+
+Example usage:
+
+```bash
+$ snowmachine tree --star=classic
+```
