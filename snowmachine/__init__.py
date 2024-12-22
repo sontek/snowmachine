@@ -135,16 +135,76 @@ def snow(speed, stack, particle, color):
 @click.option("--snow", default=True, help="Render snow")
 @click.option("--snow-particle", default=None, help="The particle for snow")
 @click.option("--snow-speed", default=20, help="Speed that the snow will fall")
-def tree(light_delay, color, lights_color, snow_color, particle, snow, snow_particle, snow_speed):
+@click.option(
+    "--star",
+    default=None,
+    help="Style of the star on top",
+    type=click.Choice(["classic", "diamond", "patrick"]),
+)
+def tree(light_delay, color, lights_color, snow_color, particle, snow, snow_particle, snow_speed, star):
     clear_screen()
     # (row, col, particle)
     treeparts = []
     trunkparts = []
+    starparts = []
 
     particle = particle or '*'
 
+    if star:  # Only initialize star if a style is specified
+        # Center star pattern
+        center_col = int(columns / 2) - 1
+        star_row = int(rows / 2) - 6
+
+        if star == "classic":
+            star_groups = [
+                # Center star
+                [(star_row + 2, center_col, "*")],
+                # Middle row
+                [(star_row + 2, center_col - 1, "*"),
+                 (star_row + 2, center_col + 1, "*")],
+                # Full row with diagonals
+                [(star_row + 2, center_col - 2, "*"),
+                 (star_row + 2, center_col + 2, "*"),
+                 (star_row + 1, center_col - 1, "\\"),
+                 (star_row + 1, center_col + 1, "/"),
+                 (star_row + 3, center_col - 1, "/"),
+                 (star_row + 3, center_col + 1, "\\")],
+                # Top and bottom stars
+                [(star_row, center_col, "*"),
+                 (star_row + 4, center_col, "*")]
+            ]
+        elif star == "diamond":
+            star_groups = [
+                [(star_row + 2, center_col, "*")],
+                [(star_row + 1, center_col - 1, "*"),
+                 (star_row + 1, center_col + 1, "*"),
+                 (star_row + 3, center_col - 1, "*"),
+                 (star_row + 3, center_col + 1, "*")],
+                [(star_row, center_col, "*"),
+                 (star_row + 2, center_col - 2, "*"),
+                 (star_row + 2, center_col + 2, "*"),
+                 (star_row + 4, center_col, "*")]
+            ]
+        else:  # patrick
+            star_row = int(rows / 2) - 4
+            star_groups = [
+                # Top point
+                [(star_row, center_col - 1, "/"),
+                 (star_row, center_col, "\\")],
+                # Middle section
+                [(star_row + 1, center_col - 2, "<"),
+                 (star_row + 1, center_col + 1, ">")],
+                # Bottom legs with space between
+                [(star_row + 2, center_col - 2, "\\/"),
+                 (star_row + 2, center_col, "\\/")]
+            ]
+
+        star_start = time.time()
+        star_delay = 0.2  # Controls speed of star animation
+
     trunk_size = 3
     tree_rows = rows - trunk_size
+
     # Draw the tree
     j = 1
     for i in range(int(tree_rows / 2), tree_rows):
@@ -212,6 +272,7 @@ def tree(light_delay, color, lights_color, snow_color, particle, snow, snow_part
                     )
             start = time.time()
 
+        # Draw tree first
         for part in new_tree:
             print_character(
                 part[0],
@@ -227,6 +288,25 @@ def tree(light_delay, color, lights_color, snow_color, particle, snow, snow_part
                 part[2],
                 "yellow",
             )
+
+        # Draw star after tree
+        if star:  # Only render if star style was specified
+            current_time = time.time()
+            star_phase = int((current_time - star_start) / star_delay) % (len(star_groups) * 2)
+            active_group = star_phase % len(star_groups)
+
+            # Render all star points
+            for group_idx, group in enumerate(star_groups):
+                # Determine color based on whether this is the active group
+                color = "white" if group_idx == active_group else "yellow"
+
+                for point in group:
+                    print_character(
+                        point[0],  # row
+                        point[1],  # col
+                        point[2],  # particle
+                        color
+                    )
 
         final_speed = 1.0 / snow_speed
         time.sleep(final_speed)
