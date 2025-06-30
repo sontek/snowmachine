@@ -127,7 +127,7 @@ def snow(speed, stack, particle, color):
 @click.option(
     "--particle",
     default="*",
-    help="Change the partice used for the leaves.",
+    help="Change the particle used for the leaves.",
 )
 @click.option("--snow", default=True, help="Render snow")
 @click.option("--snow-particle", default=None, help="The particle for snow")
