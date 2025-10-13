@@ -23,6 +23,8 @@ color_options = [
     #    "rainbow",
 ]
 
+
+
 bad_colors = ["RESET"]
 codes = vars(Fore)
 colors = []
@@ -305,6 +307,215 @@ def tree(light_delay, color, lights_color, snow_color, particle, snow, snow_part
         final_speed = 1.0 / snow_speed
         time.sleep(final_speed)
 
+@cli.command()
+@click.option("--speed", default=14, help="Increase to make it snow faster.")
+@click.option(
+    "--plowchar",
+    default="truck",
+    help="Choose your plow character",
+    type=click.Choice(["truck","person"]),
+)
+@click.option(
+    "--min_snowtimer",
+    default=120,
+    help="Minimum time to snow before starting to plow. Defaults to 120 cylces",
+)
+@click.option(
+    "--max_snowtimer",
+    default=200,
+    help="maximum time to snow before starting to plow. Defaults to 200 cycles",
+)
+@click.option(
+    "--particle",
+    default=None,
+    help="Change the particle used.",
+)
+@click.option(
+    "--color",
+    default=None,
+    help="Change the color of the particle.",
+    type=click.Choice(colors + ["rainbow"]),
+)
+def snowplow(speed, plowchar, min_snowtimer, max_snowtimer, particle, color):
+    clear_screen()
+    # This ends up formatted as column being the key and then [0] is row and
+    # [1] is the particle. For example:
+    # {"1": [0, "*"]}
+    snowflakes = {}
+    current_rows = {}
+    snowTimer = random.randrange(min_snowtimer,max_snowtimer)
+    curSnowTimer = 0
+    waitForLastFlakeTime = rows
+    curWaitForLastFlakeTimer = 0
+    isSnowing = True
+    isPlowing = False
+    hasLastFlakeFallen = False
+    curSnowPlowColumn = columns
+    maxPlowCharWidth = 0
+    isMovingLeft = True
+    
+    # The spaces are used to blank out characters so make sure to pad the images.
+    asciiTruckLeft = {
+    7:"             /================ ",
+    6:"      ___   //  @||----------| ",
+    5:"    _|___|_//_\_|||_____|____| ",
+    4:"   |  ____ |     ||    /___  |> ",
+    3:"   | |    \|_____||___|    \ |> ",
+    2:"]_/|_|  O  \__________|  O  \|| ",  
+    1:"]     \___/~~          \___/~~ "  
+
+    }
+    
+    asciiTruckRight = {
+    7:" ================\\             ",
+    6:"  |----------||@  \\\   ___     ",
+    5:"  |____|_____|||_/_\\\_|___|_   ",
+    4:" <|  ___\    ||     | ____  |   ",
+    3:" <| /    |___||_____|/    | |   ",
+    2:" ||/  O  |__________/  O  |_|\_[",
+    1:"  ~~\___/          ~~\___/     ["
+    }
+
+    asciiPersonLeft = {
+    3:"   @  ",
+    2:"  /|\ ",
+    1:"]//^\ "
+    }
+
+    # Sometimes escape trickery is needed like with the backslash.
+    asciiPersonRight = {
+    3:"  @   ",
+    2:" /|\  ",
+    1:" /^\\\["   
+    }
+    
+    # If the plowchar is truck, then we need to flip the left and right
+    if (plowchar == "truck" and isMovingLeft):
+        plowchar = asciiTruckLeft
+    elif (plowchar == "truck"):
+        plowchar = asciiTruckRight
+    # If the plowchar is person, then we need to flip the left and right
+    if (plowchar == "person" and isMovingLeft):
+        plowchar = asciiPersonLeft
+    elif (plowchar == "person"):
+        plowchar = asciiPersonRight
+    # Get the longest string in the ascii array, used to calculate screen buffer spice on the sides so they can move offscreen.
+    maxPlowCharWidth = max(len(value) for value in plowchar.values())
+
+
+
+    while True:
+        col = random.choice(range(1, int(columns)))
+
+        # Don't print snowflakes right next to each other, since
+        # unicode flakes take 2 spaces
+        if col % 2 == 0:
+            continue
+
+        # its already on the screen, move it
+        if col in snowflakes.keys() and hasLastFlakeFallen == False:
+            move_plow_flake(snowflakes, col, particle, color, isSnowing)
+        else:
+            # we only want to move snowflakes if it's snowing.
+            if (isSnowing):
+                # otherwise put it on the screen
+                flake = particle if particle else get_random_flake()
+                snowflakes[col] = [1, flake]
+                print_snowflake_col(snowflakes, col, color)
+
+        # key any flakes on the screen moving
+        for flake in snowflakes.keys():
+            if (hasLastFlakeFallen == False):
+                move_plow_flake(snowflakes, flake, particle, color, isSnowing)
+        # if it's snowing do the regular speed
+        if (isSnowing):
+            final_speed = 1.0 / speed
+            curSnowTimer += 1
+        else:
+            # It's plow time!
+            if (isPlowing):
+                maxPlowCharWidth = max(len(value) for value in plowchar.values())
+                # Speed up time for plowing * 2
+                final_speed = 0.5 / speed
+                
+                # If there is a snowflake in our current column, erase the flake delete it from snowflakes.
+                if curSnowPlowColumn in snowflakes.keys():
+                    print("\033[%s;%sH  " % (snowflakes[curSnowPlowColumn][0], curSnowPlowColumn))
+                    snowflakes.pop(curSnowPlowColumn)
+                
+                if (isMovingLeft):
+                    # Lets the plow drive off the screen to the left.
+                    if curSnowPlowColumn + maxPlowCharWidth >= 0:
+                        # This is magic, let's iterate through each row and print out each character of the ascii truck.
+                        for key, value in plowchar.items():
+                            for index, character in enumerate(value):
+                                print_character(rows-key,curSnowPlowColumn + index,character,color)
+                        # decrease the plow column
+                        curSnowPlowColumn -= 1
+                            
+                    else:
+                        # If we aren't plowing anymore let's clear the screen and reset variables.
+                        clear_screen()
+                        isPlowing = False
+                        isSnowing = True
+                        hasLastFlakeFallen = False
+                        isMovingLeft = False
+                        if (plowchar == asciiTruckLeft):
+                            plowchar = asciiTruckRight
+                        if (plowchar == asciiPersonLeft):
+                            plowchar = asciiPersonRight     
+                  
+                elif (not isMovingLeft):
+                    # Lets the plow drive off the screen to the right.
+                    if curSnowPlowColumn <= columns + maxPlowCharWidth:
+                        # This is magic, let's iterate through each row and print out each character of the ascii truck.
+                        for key, value in plowchar.items():
+                            for index, character in enumerate(reversed(value)):
+                                print_character(rows-key,curSnowPlowColumn - index,character,color)
+                        # increase the plow column since we're going right
+                        curSnowPlowColumn += 1
+                    else:
+                        # If we aren't plowing anymore let's clear the screen and reset variables.
+                        clear_screen()
+                        isPlowing = False
+                        isSnowing = True
+                        hasLastFlakeFallen = False
+                        isMovingLeft = True
+                        if (plowchar == asciiTruckRight):
+                            plowchar = asciiTruckLeft
+                        if (plowchar == asciiPersonRight):
+                            plowchar = asciiPersonLeft
+  
+                    
+            else:
+                # We want to wait until all of the snowflakes have fallen before we start plowing.
+                if (hasLastFlakeFallen):
+                    # We are ready to plow, last snowflake has fallen
+                    isPlowing = True
+                    # right before we plow lets set the plow position based on moving direction.
+                    if (isMovingLeft):
+                        curSnowPlowColumn = columns
+                    elif (not isMovingLeft):
+                        curSnowPlowColumn = 0
+        
+                    curWaitForLastFlakeTimer = 0
+                else:
+                    if (curWaitForLastFlakeTimer >= waitForLastFlakeTime):
+                        hasLastFlakeFallen = True
+                    else:
+                        curWaitForLastFlakeTimer += 1
+        #Time for now until the timer reaches the snowTimer.
+        if (curSnowTimer >= snowTimer):
+            # Time to stop snowing
+            isSnowing = False
+            curSnowTimer = 0
+            snowTimer = random.randrange(min_snowtimer,max_snowtimer)
+
+        try:
+            time.sleep(final_speed)
+        except KeyboardInterrupt:
+            clear_screen()
+            sys.exit(0)
 
 def clear_screen(numlines=100):
     """Clear the console.
@@ -372,6 +583,36 @@ def print_character(row, column, character, color):
 def print_snowflake_col(snowflakes, col, color):
     print_character(snowflakes[col][0], col, snowflakes[col][1], color)
 
+def move_plow_flake(snowflakes, col, particle, color, isSnowing):
+    # Rows is the max amount of rows on the screen,
+    # so settings the column to the rows count means
+    # putting it at the bottom of the screen
+
+    current_row = rows
+
+    # If next row is the end, lets start a new snow flake, but only if it's snowing.
+    if isSnowing:
+        if snowflakes[col][0] + 1 == current_row:
+            char = particle
+            if not particle:
+                char = get_random_flake()
+            snowflakes[col] = [1, char]
+            print_snowflake_col(snowflakes, col, color)
+
+        else:
+            # erase the flake in current location
+            print("\033[%s;%sH  " % (snowflakes[col][0], col))
+            # move down by one
+            snowflakes[col][0] += 1
+            print_snowflake_col(snowflakes, col, color)
+    # If it's not snowing and the snowflake isn't touching the ground let's move it down.
+    else:
+        if snowflakes[col][0] +1 != current_row:
+            # erase the flake in current location
+            print("\033[%s;%sH  " % (snowflakes[col][0], col))
+            # move down by one
+            snowflakes[col][0] += 1
+            print_snowflake_col(snowflakes, col, color)
 
 def move_flake(snowflakes, current_rows, col, stack, particle, color):
     # Rows is the max amount of rows on the screen,
