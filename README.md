@@ -24,6 +24,11 @@ pip install snowmachine
 nix-shell -p snowmachine --command snowmachine
 ```
 
+*[x-cmd](https://x-cmd.com/install/snowmachine)*:
+```bash
+x install snowmachine
+```
+
 *docker*:
 ```bash
 docker run --rm -ti sontek/snowmachine
